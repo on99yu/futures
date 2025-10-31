@@ -1,11 +1,7 @@
+import AppRouter from './routes/AppRouter.tsx';
 
-function App() {
-
+export default function App(){
   return (
-    <>
-      <h2 className='text-2xl text-blue-500'>Hello</h2>
-    </>
+    <AppRouter/>
   )
 }
-
-export default App

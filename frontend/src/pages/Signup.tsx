@@ -3,46 +3,42 @@ import { Link } from "react-router-dom";
 
 const API_URL = import.meta.env.BACKEND_API_URL;
 
-export default function Login(){
+export default function Singup(){
 
     const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("");
     const [error,setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent)=>{
-      e.preventDefault();
-      setError("");
-      setIsLoading(true);
-      try{
-        // 로그인 로직 구현
-        const res = await fetch(`${API_URL}/api/auth/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: email, password: password}),
-      })
+        e.preventDefault();
+        setError("");
+        setIsLoading(true);
 
-        const data = await res.json();
-
-        if(!res.ok){
-              throw new Error(data.error || "로그인 실패");
+        try {
+            const res = await fetch(`${API_URL}/api/auth/signup`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username: username, password: password, email: email }),
+                }
+                )
+            if(!res.ok){
+                const data = await res.json();
+                throw new Error(data.error|| "회원가입 실패");
+            }   
+        }catch(err){
+            if(err instanceof Error){
+                setError(err.message);
+            }else{
+                setError("알 수 없는 오류가 발생했습니다.");
+            }
+        }finally{
+            setIsLoading(false)
         }
-        localStorage.setItem("token", data.token);
-        alert("로그인 성공");
-      }catch(err){
-        if(err instanceof Error){
-          setError(err.message);
-        }else{
-          setError("알 수 없는 오류가 발생했습니다.");
-        }
-      }finally{
-        setIsLoading(false)
-      }
-    };
-    
-
+    }
 
     return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -50,8 +46,16 @@ export default function Login(){
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm"
       >
-        <h2 className="text-2xl font-semibold mb-4">로그인</h2>
+        <h2 className="text-2xl font-semibold mb-4">회원가입</h2>
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+        <input
+          type="text"
+          placeholder="이름"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full mb-3 p-2 border rounded"
+          required
+        />
         <input
           type="text"
           placeholder="이메일"
@@ -74,11 +78,12 @@ export default function Login(){
           className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
           disabled={isLoading}
         >
-          {isLoading ? "로그인 중..." : "로그인"}
+          {isLoading ? "회원가입 중..." : "회원가입"}
         </button>
-        <Link to="/signup"className="text-blue-500 hover:underline">회원가입하러가기 </Link>
+        <Link to="/login"className="text-blue-500 hover:underline">로그인 하러가기</Link>
         </div>
       </form>
     </div>
     )
 }
+    
