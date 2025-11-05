@@ -4,6 +4,8 @@ import com.springboot.dto.LoginRequest;
 import com.springboot.dto.LoginResponse;
 import com.springboot.dto.SignupRequest;
 import com.springboot.dto.SignupResponse;
+import com.springboot.model.User;
+import com.springboot.repository.UserRepository;
 import com.springboot.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -21,16 +24,14 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
-
+    private final UserRepository userRepository;
     // @param request {"username": "...", "password": "..."}
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request){
 
-            String token = authService.login(request.email(), request.password());
-
-            System.out.println("Generated Token: " + token); // 토큰 출력
-            return ResponseEntity.ok(new LoginResponse(token));
+            LoginResponse response = authService.login(request.email(), request.password());
+            return ResponseEntity.ok(response);
 
     }
 

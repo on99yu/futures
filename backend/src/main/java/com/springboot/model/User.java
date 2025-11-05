@@ -25,4 +25,7 @@ public class User {
     private String password;
 
     private String role;
+
+    @Transient
+    private String tempToken;
 }

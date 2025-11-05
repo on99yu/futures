@@ -1,5 +1,6 @@
 package com.springboot.service;
 
+import com.springboot.dto.LoginResponse;
 import com.springboot.model.User;
 import com.springboot.repository.UserRepository;
 import com.springboot.security.JwtUtil;
@@ -17,11 +18,9 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public String login(String username, String password){
+    public LoginResponse login(String email, String password){
 
-        Optional<User> userOpt = userRepository.findByEmail(username);
-        // 로그 지워야함
-        System.out.println("userOpt: " + userOpt);
+        Optional<User> userOpt = userRepository.findByEmail(email);
         if(userOpt.isEmpty()){
             throw new RuntimeException("존재하지않는 사용자입니다");
         }
@@ -29,7 +28,9 @@ public class AuthService {
         if(!passwordEncoder.matches(password, user.getPassword())){
             throw new RuntimeException("비밀번호가 일치하지 않습니다");
         }
-        return jwtUtil.generateToken(user.getUsername());
+
+        String token = jwtUtil.generateToken(user.getUsername());
+        return new LoginResponse(token, user.getUsername(), user.getEmail());
     }
 
     public User signup(String username,  String email, String password){
