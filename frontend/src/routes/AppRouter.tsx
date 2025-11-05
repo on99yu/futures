@@ -3,7 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import Admin from "../pages/admin";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
-import Kanji from "../pages/Kanji";
+import Kanji from "../pages/kanji/Kanji";
 import ProtectedRoute from "./ProtectedRoute";
 const router = createBrowserRouter([
 
